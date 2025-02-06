@@ -20,7 +20,7 @@ pipeline {
 
         stage('Compilar proyecto') {
             steps {
-                sh 'mvn compile'
+                bat 'mvn compile'
             }
         }
 
