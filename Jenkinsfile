@@ -26,7 +26,7 @@ pipeline {
 
         stage('Ejectutar Pruebas') {
             steps {
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
 
