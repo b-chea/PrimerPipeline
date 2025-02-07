@@ -3,7 +3,7 @@ pipeline {
     environment {
         JIRA_SITE = 'https://bethsaidach-1738694022756.atlassian.net'
         JIRA_CREDENTIALS = credentials('jenkins-credentials-local') // Utilizamos las credenciales guardadas de forma segura
-        JIRA_USER = "${JIRA_CREDENTIALS_USR}"
+        //JIRA_USER = "${JIRA_CREDENTIALS_USR}"
         JIRA_API_TOKEN = "${JIRA_CREDENTIALS_PSW}"
         JIRA_ISSUE_KEY = 'PLPROJECT1'  // Clave del proyecto en Jira
         JIRA_ISSUE_TYPE = 'Bug' // Tipo de issue, personaliza según sea necesario
