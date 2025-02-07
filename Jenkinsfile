@@ -9,6 +9,10 @@ pipeline {
         JIRA_ISSUE_TYPE = 'Bug' // Tipo de issue, personaliza según sea necesario
         // Aquí concatenamos y codificamos las credenciales en Base64 de manera más segura
         JIRA_AUTH = credentials('jenkins-credentials-local') // No usamos string interpolation insegura
+
+
+        JIRA_USER = "bethsaidach@outlook.com"
+        JIRA_URL = "https://bethsaidach-1738694022756.atlassian.net/rest/api/3/issue"
     }
 
     tools {
@@ -42,30 +46,23 @@ pipeline {
         stage('Create Jira Issue') {
             steps {
                 script {
-                    // Usar con las credenciales en un bloque conCredentials para mayor seguridad
-                    withCredentials([usernamePassword(credentialsId: 'jenkins-credentials-local', usernameVariable: 'JIRA_USER', passwordVariable: 'JIRA_API_TOKEN')]) {
-                        // Crear el cuerpo del JSON para la solicitud de Jira
-                        def jiraIssue = [
-                            fields: [
-                                project: [ key: env.JIRA_ISSUE_KEY ], // Clave del proyecto en Jira
-                                summary: "Build failed for ${env.JOB_NAME} #${env.BUILD_NUMBER}", // Resumen del issue
-                                description: "The build failed. Please check the Jenkins logs for more details.", // Descripción del issue
-                                issuetype: [ name: env.JIRA_ISSUE_TYPE ] // Tipo de issue (Bug, Task, etc.)
-                            ]
-                        ]
+                    withCredentials([string(credentialsId: 'JIRA_API_TOKEN', variable: 'JIRA_AUTH_PSW')]) {
+                        def authHeader = "Basic " + "${JIRA_USER}:${JIRA_AUTH_PSW}".bytes.encodeBase64().toString()
+                        def jsonPayload = """{
+                            "fields": {
+                                "project": { "key": "TEST" },
+                                "summary": "Prueba desde Jenkins",
+                                "description": "Creando un issue desde Jenkins",
+                                "issuetype": { "name": "Bug" }
+                            }
+                        }"""
 
-                        // Realizar la solicitud HTTP para crear el issue
-                        def response = httpRequest(
-                            acceptType: 'APPLICATION_JSON',
-                            contentType: 'APPLICATION_JSON',
-                            httpMode: 'POST',
-                            requestBody: groovy.json.JsonOutput.toJson(jiraIssue), // Convertir el cuerpo a JSON
-                            url: "${env.JIRA_SITE}/rest/api/3/issue", // URL del API de Jira
-                            customHeaders: [[name: 'Authorization', value: "Basic ${JIRA_USER}:${JIRA_API_TOKEN}".bytes.encodeBase64().toString()]] // Codificación de las credenciales de forma segura
-                        )
+                        def response = sh(
+                            script: """curl -X POST -H "Authorization: ${authHeader}" -H "Content-Type: application/json" -H "Accept: application/json" --data '${jsonPayload}' ${JIRA_URL}""",
+                            returnStdout: true
+                        ).trim()
 
-                        echo "Jira issue created: ${response.status}" // Mostrar el estado de la respuesta
-                        echo "Jira response: ${response.content}" // Mostrar el contenido de la respuesta
+                        echo "JIRA Response: ${response}"
                     }
                 }
             }
