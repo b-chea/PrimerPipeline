@@ -35,9 +35,11 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'jenkins-credentials-local', usernameVariable: 'JIRA_USER', passwordVariable: 'JIRA_AUTH_PSW')]) {
+                        def authHeader = "Basic " + "${JIRA_USER}:${JIRA_AUTH_PSW}".bytes.encodeBase64().toString()
+
                         bat """
                         curl -X POST ^
-                        -H "Authorization: Basic ${JIRA_AUTH_PSW}" ^
+                        -H "Authorization: ${authHeader}" ^
                         -H "Content-Type: application/json" ^
                         -H "Accept: application/json" ^
                         --data "{ \\"fields\\": { \\"project\\": { \\"key\\": \\"PLPROJECT1\\" }, \\"summary\\": \\"Prueba desde Jenkins\\", \\"description\\": \\"Creando un issue desde Jenkins\\", \\"issuetype\\": { \\"name\\": \\"Bug\\" } } }" ^
