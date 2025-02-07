@@ -48,7 +48,7 @@ pipeline {
                         def authHeader = "Basic " + "${JIRA_USER}:${JIRA_AUTH_PSW}".bytes.encodeBase64().toString()
                         def jsonPayload = """{
                             "fields": {
-                                "project": { "key": "TEST" },
+                                "project": { "key": "PLPROJECT1" },
                                 "summary": "Prueba desde Jenkins",
                                 "description": "Creando un issue desde Jenkins",
                                 "issuetype": { "name": "Bug" }
