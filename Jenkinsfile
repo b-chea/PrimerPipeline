@@ -8,8 +8,6 @@ pipeline {
         JIRA_ISSUE_KEY = 'PLPROJECT1'
         JIRA_ISSUE_TYPE = 'Bug' //TENER EN CUENTA
         JIRA_AUTH = "${JIRA_USER}:${JIRA_API_TOKEN}".bytes.encodeBase64().toString()
-
-
     }
     tools {
         maven 'MAVEN_HOME'
