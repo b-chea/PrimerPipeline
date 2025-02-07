@@ -7,7 +7,7 @@ pipeline {
         JIRA_API_TOKEN = "${JIRA_CREDENTIALS_PSW}"
         JIRA_ISSUE_KEY = 'PLPROJECT1'
         JIRA_ISSUE_TYPE = 'Bug' //TENER EN CUENTA
-        JIRA_AUTH = "${JIRA_USER}:${JIRA_API_TOKEN}".bytes.encodeBase64().toString()
+        JIRA_AUTH = java.util.Base64.encoder.encodeToString("${JIRA_USER}:${JIRA_API_TOKEN}".getBytes("UTF-8"))
     }
     tools {
         maven 'MAVEN_HOME'
