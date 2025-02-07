@@ -42,28 +42,31 @@ pipeline {
         stage('Create Jira Issue') {
             steps {
                 script {
-                    // Crear el cuerpo del JSON para la solicitud de Jira
-                    def jiraIssue = [
-                        fields: [
-                            project: [ key: env.JIRA_ISSUE_KEY ], // Clave del proyecto en Jira
-                            summary: "Build failed for ${env.JOB_NAME} #${env.BUILD_NUMBER}", // Resumen del issue
-                            description: "The build failed. Please check the Jenkins logs for more details.", // Descripción del issue
-                            issuetype: [ name: env.JIRA_ISSUE_TYPE ] // Tipo de issue (Bug, Task, etc.)
+                    // Usar con las credenciales en un bloque conCredentials para mayor seguridad
+                    withCredentials([usernamePassword(credentialsId: 'jenkins-credentials-local', usernameVariable: 'JIRA_USER', passwordVariable: 'JIRA_API_TOKEN')]) {
+                        // Crear el cuerpo del JSON para la solicitud de Jira
+                        def jiraIssue = [
+                            fields: [
+                                project: [ key: env.JIRA_ISSUE_KEY ], // Clave del proyecto en Jira
+                                summary: "Build failed for ${env.JOB_NAME} #${env.BUILD_NUMBER}", // Resumen del issue
+                                description: "The build failed. Please check the Jenkins logs for more details.", // Descripción del issue
+                                issuetype: [ name: env.JIRA_ISSUE_TYPE ] // Tipo de issue (Bug, Task, etc.)
+                            ]
                         ]
-                    ]
 
-                    // Realizar la solicitud HTTP para crear el issue
-                    def response = httpRequest(
-                        acceptType: 'APPLICATION_JSON',
-                        contentType: 'APPLICATION_JSON',
-                        httpMode: 'POST',
-                        requestBody: groovy.json.JsonOutput.toJson(jiraIssue), // Convertir el cuerpo a JSON
-                        url: "${env.JIRA_SITE}/rest/api/3/issue", // URL del API de Jira
-                        customHeaders: [[name: 'Authorization', value: "Basic ${JIRA_USER}:${JIRA_API_TOKEN}".bytes.encodeBase64().toString()]] // Codificación de las credenciales de forma segura
-                    )
+                        // Realizar la solicitud HTTP para crear el issue
+                        def response = httpRequest(
+                            acceptType: 'APPLICATION_JSON',
+                            contentType: 'APPLICATION_JSON',
+                            httpMode: 'POST',
+                            requestBody: groovy.json.JsonOutput.toJson(jiraIssue), // Convertir el cuerpo a JSON
+                            url: "${env.JIRA_SITE}/rest/api/3/issue", // URL del API de Jira
+                            customHeaders: [[name: 'Authorization', value: "Basic ${JIRA_USER}:${JIRA_API_TOKEN}".bytes.encodeBase64().toString()]] // Codificación de las credenciales de forma segura
+                        )
 
-                    echo "Jira issue created: ${response.status}" // Mostrar el estado de la respuesta
-                    echo "Jira response: ${response.content}" // Mostrar el contenido de la respuesta
+                        echo "Jira issue created: ${response.status}" // Mostrar el estado de la respuesta
+                        echo "Jira response: ${response.content}" // Mostrar el contenido de la respuesta
+                    }
                 }
             }
         }
