@@ -55,7 +55,7 @@ pipeline {
                             }
                         }"""
 
-                        def response = sh(
+                        def response = bat(
                             script: """curl -X POST -H "Authorization: ${authHeader}" -H "Content-Type: application/json" -H "Accept: application/json" --data '${jsonPayload}' ${JIRA_URL}""",
                             returnStdout: true
                         ).trim()
