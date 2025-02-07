@@ -42,7 +42,7 @@ pipeline {
                         -H "Authorization: ${authHeader}" ^
                         -H "Content-Type: application/json" ^
                         -H "Accept: application/json" ^
-                        --data "{ \\"fields\\": { \\"project\\": { \\"key\\": \\"PLPROJECT1\\" }, \\"summary\\": \\"Prueba desde Jenkins\\", \\"description\\": \\"Creando un issue desde Jenkins\\", \\"issuetype\\": { \\"name\\": \\"Bug\\" } } }" ^
+                        --data "{ \\"fields\\": { \\"project\\": { \\"key\\": \\"PLPROJECT1\\" }, \\"summary\\": \\"Prueba desde Jenkins\\", \\"description\\": { \\"type\\": \\"doc\\", \\"version\\": 1, \\"content\\": [{\\"type\\": \\"paragraph\\", \\"content\\": [{\\"type\\": \\"text\\", \\"text\\": \\"Creando un issue desde Jenkins\\"}]}] }, \\"issuetype\\": { \\"name\\": \\"Bug\\" } } }" ^
                         "${JIRA_URL}"
                         """
                     }
