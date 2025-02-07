@@ -24,8 +24,6 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building..."
-                echo "JIRA_USER: ${JIRA_USER}"
-                echo "JIRA_API_TOKEN: ${JIRA_API_TOKEN}"
                 // Descomenta si quieres añadir un comentario en Jira al inicio de la build
                 // jiraAddComment comment: 'Build iniciada en Jenkins', idOrKey: 'PLPROJECT1', site: 'bethsaidach-1738694022756.atlassian.net'
             }
