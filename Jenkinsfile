@@ -44,7 +44,7 @@ pipeline {
         stage('Create Jira Issue') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'JIRA_API_TOKEN', variable: 'JIRA_AUTH_PSW')]) {
+                    withCredentials([string(credentialsId: 'jenkins-credentials-local', variable: 'JIRA_AUTH_PSW')]) {
                         def authHeader = "Basic " + "${JIRA_USER}:${JIRA_AUTH_PSW}".bytes.encodeBase64().toString()
                         def jsonPayload = """{
                             "fields": {
